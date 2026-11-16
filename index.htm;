@@ -1,0 +1,1883 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="染详个人展示页：个人信息、电竞经历与荣誉、直播切片、日常动态与桂花雨粉丝留言。">
+<title>染详 · 桂花雨</title>
+
+<style>
+:root{
+  --pink:#e993ae;
+  --pink-dark:#aa526f;
+  --pink-light:#fde6ee;
+  --pink-pale:#fff8fa;
+  --text:#593f48;
+  --muted:#967b86;
+  --line:#efccd7;
+  --shadow:0 18px 48px rgba(163,91,118,.12);
+}
+
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;
+  min-width:320px;
+  color:var(--text);
+  line-height:1.75;
+  background:
+    radial-gradient(circle at 8% 8%,#ffe5ee 0,transparent 24%),
+    radial-gradient(circle at 94% 85%,#fff0d8 0,transparent 22%),
+    var(--pink-pale);
+  font-family:"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+}
+
+button,input,textarea{font:inherit}
+button{cursor:pointer}
+button,a{-webkit-tap-highlight-color:transparent}
+a{color:inherit}
+img{display:block;max-width:100%}
+
+:focus-visible{
+  outline:3px solid var(--pink-dark);
+  outline-offset:4px;
+}
+
+/* 页面切换 */
+.page{display:none;min-height:100vh}
+.page.active{display:block;animation:enter .4s ease both}
+
+@keyframes enter{
+  from{opacity:0;transform:translateY(8px)}
+  to{opacity:1;transform:none}
+}
+
+/* 页面装饰 */
+.sticker{
+  position:fixed;
+  z-index:5;
+  width:82px;
+  pointer-events:none;
+  filter:drop-shadow(0 8px 8px rgba(160,90,115,.12));
+}
+.sticker-axolotl{top:6%;left:3%;transform:rotate(-12deg)}
+.sticker-rabbit{right:3%;bottom:7%;transform:rotate(9deg)}
+
+/* 照片设置入口 */
+.photo-settings-button{
+  position:fixed;
+  top:16px;
+  right:16px;
+  z-index:40;
+  padding:8px 15px;
+  border:1px solid var(--line);
+  border-radius:999px;
+  color:var(--pink-dark);
+  background:rgba(255,255,255,.94);
+  box-shadow:0 8px 24px rgba(163,91,118,.12);
+  font-size:13px;
+}
+
+.photo-settings-button:hover{
+  color:#fff;
+  background:var(--pink);
+}
+
+/* 封面 */
+.cover{
+  position:relative;
+  overflow:hidden;
+  padding:58px 20px 76px;
+}
+.cover.active{
+  display:grid;
+  place-items:center;
+}
+.cover-layout{
+  display:grid;
+  grid-template-columns:minmax(160px,220px) minmax(260px,350px) minmax(160px,220px);
+  align-items:center;
+  gap:38px;
+  width:min(100%,940px);
+}
+.cover-menu{display:grid;gap:18px}
+.cover-menu-right{align-content:center}
+
+.menu-button{
+  min-height:58px;
+  padding:12px 18px;
+  border:1px solid var(--line);
+  border-radius:999px;
+  color:var(--pink-dark);
+  background:rgba(255,255,255,.9);
+  box-shadow:0 8px 24px rgba(177,100,128,.07);
+  transition:.2s ease;
+}
+.menu-button:hover{
+  color:#fff;
+  border-color:var(--pink);
+  background:var(--pink);
+  transform:translateY(-3px);
+}
+
+.portrait-wrap{text-align:center}
+.portrait-frame{
+  overflow:hidden;
+  aspect-ratio:4/5;
+  padding:10px;
+  border:1px solid #fff;
+  border-radius:48% 48% 28px 28px;
+  background:#fff;
+  box-shadow:var(--shadow);
+}
+.portrait-frame img{
+  width:100%;
+  height:100%;
+  border-radius:inherit;
+  object-fit:cover;
+  object-position:center top;
+  background:var(--pink-light);
+}
+
+.cover-name{
+  margin:22px 0 0;
+  color:var(--pink-dark);
+  font-family:"STKaiti","KaiTi",serif;
+  font-size:clamp(44px,7vw,66px);
+  font-weight:500;
+  letter-spacing:.18em;
+  line-height:1.1;
+}
+.cover-subtitle{
+  margin:10px 0 0;
+  color:var(--muted);
+  font-size:13px;
+  letter-spacing:.14em;
+}
+.cover-footer{
+  position:absolute;
+  bottom:23px;
+  left:50%;
+  transform:translateX(-50%);
+  color:var(--pink);
+  font-family:"STKaiti","KaiTi",serif;
+  font-size:15px;
+  letter-spacing:.55em;
+  white-space:nowrap;
+}
+
+/* 内页通用 */
+.inner-page{
+  padding:70px clamp(16px,5vw,70px) 70px;
+}
+.topbar{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:16px;
+  width:min(100%,1080px);
+  margin:0 auto 38px;
+}
+.back-button{
+  padding:9px 18px;
+  border:1px solid var(--line);
+  border-radius:999px;
+  color:var(--pink-dark);
+  background:#fff;
+}
+.page-mark{
+  color:var(--muted);
+  font-size:12px;
+  letter-spacing:.16em;
+}
+.section{
+  width:min(100%,1080px);
+  margin:auto;
+}
+.section-heading{
+  margin-bottom:32px;
+  text-align:center;
+}
+.section-heading h1{
+  margin:0;
+  color:var(--pink-dark);
+  font-family:"STKaiti","KaiTi",serif;
+  font-size:clamp(31px,5vw,46px);
+  font-weight:500;
+  letter-spacing:.07em;
+}
+.section-heading p{
+  margin:8px 0 0;
+  color:var(--muted);
+  font-size:14px;
+}
+
+/* 个人信息工作牌 */
+.badge{
+  position:relative;
+  width:min(100%,440px);
+  margin:58px auto 0;
+  padding:54px 38px 32px;
+  border:1px solid var(--line);
+  border-radius:28px;
+  background:rgba(255,255,255,.95);
+  box-shadow:var(--shadow);
+}
+.badge::before{
+  position:absolute;
+  top:0;
+  left:0;
+  width:100%;
+  height:18px;
+  content:"";
+  background:linear-gradient(90deg,var(--pink-light),var(--pink),#f7d4b1);
+}
+.badge::after{
+  position:absolute;
+  top:29px;
+  left:50%;
+  width:72px;
+  height:10px;
+  content:"";
+  border:2px solid var(--line);
+  border-radius:999px;
+  transform:translateX(-50%);
+}
+.badge-avatar{
+  overflow:hidden;
+  width:118px;
+  height:118px;
+  margin:0 auto 20px;
+  border:6px solid var(--pink-light);
+  border-radius:50%;
+  background:var(--pink-light);
+}
+.badge-avatar img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  object-position:center top;
+}
+.badge-id{
+  margin:0 0 16px;
+  color:var(--pink-dark);
+  font-size:13px;
+  text-align:center;
+}
+.profile-list{margin:0}
+.profile-row{
+  display:grid;
+  grid-template-columns:90px 1fr;
+  gap:15px;
+  padding:12px 0;
+  border-bottom:1px dashed var(--line);
+}
+.profile-row:last-child{border-bottom:0}
+.profile-row dt{color:var(--muted)}
+.profile-row dd{margin:0;font-weight:600}
+
+.social-links{
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:center;
+  gap:10px;
+  margin-top:25px;
+}
+.social-links a,.social-links button{
+  padding:8px 15px;
+  border:0;
+  border-radius:999px;
+  color:var(--pink-dark);
+  background:var(--pink-light);
+  font-size:13px;
+  text-decoration:none;
+}
+
+/* 电竞经历时间轴 */
+.timeline{
+  position:relative;
+  width:min(100%,930px);
+  margin:auto;
+}
+.timeline::before{
+  position:absolute;
+  top:0;
+  bottom:0;
+  left:157px;
+  width:2px;
+  content:"";
+  background:var(--line);
+}
+.timeline-item{
+  display:grid;
+  grid-template-columns:128px 58px 1fr;
+  margin-bottom:36px;
+}
+.timeline-date{
+  padding-top:24px;
+  color:var(--pink-dark);
+  font-size:14px;
+  font-weight:700;
+  text-align:right;
+}
+.timeline-dot{
+  z-index:1;
+  width:15px;
+  height:15px;
+  margin:32px auto 0;
+  border:4px solid var(--pink-pale);
+  border-radius:50%;
+  background:var(--pink);
+  box-shadow:0 0 0 1px var(--pink);
+}
+.timeline-card{
+  display:grid;
+  grid-template-columns:200px 1fr;
+  overflow:hidden;
+  border:1px solid var(--line);
+  border-radius:20px;
+  background:#fff;
+  box-shadow:0 10px 30px rgba(177,100,128,.07);
+}
+.timeline-visual{
+  display:grid;
+  place-items:center;
+  padding:22px 14px;
+  border-right:1px solid var(--line);
+  background:
+    radial-gradient(circle at 20% 18%,#fff 0 4%,transparent 4.5%),
+    radial-gradient(circle at 80% 78%,#fff 0 5%,transparent 5.5%),
+    linear-gradient(150deg,var(--visual-bg,#ffeef4),#fffaf5);
+}
+.timeline-visual figure{
+  margin:0;
+  text-align:center;
+}
+.timeline-visual .axo{
+  width:104px;
+  height:auto;
+  margin:0 auto;
+  filter:drop-shadow(0 6px 8px rgba(163,91,118,.14));
+}
+.timeline-visual figcaption{
+  margin-top:4px;
+  color:var(--muted);
+  font-size:11px;
+  letter-spacing:.16em;
+}
+.timeline-copy{padding:23px}
+.timeline-copy h2{
+  margin:0 0 10px;
+  font-size:20px;
+  line-height:1.45;
+}
+.timeline-copy p{
+  margin:8px 0;
+  color:var(--muted);
+  font-size:14px;
+}
+.official-quote{
+  padding-left:12px;
+  border-left:3px solid var(--pink);
+  color:var(--pink-dark)!important;
+}
+.honor{
+  display:inline-block;
+  margin:9px 6px 0 0;
+  padding:4px 11px;
+  border-radius:999px;
+  color:#8d641f;
+  background:#fff3d5;
+  font-size:12px;
+}
+
+/* 拍立得 */
+.polaroid-grid{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:28px;
+}
+.polaroid{
+  min-width:0;
+  margin:0;
+  padding:13px 13px 20px;
+  border:1px solid #f0e0e6;
+  background:#fff;
+  box-shadow:var(--shadow);
+  transition:transform .2s ease;
+}
+.polaroid:nth-child(odd){transform:rotate(-1deg)}
+.polaroid:nth-child(even){transform:rotate(1deg)}
+.polaroid:hover{transform:rotate(0) translateY(-5px)}
+
+.polaroid-media{
+  display:block;
+  overflow:hidden;
+  aspect-ratio:4/3;
+  background:var(--pink-light);
+}
+.polaroid-media img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+}
+.polaroid figcaption{padding:15px 7px 0}
+.polaroid h2{
+  margin:0 0 6px;
+  font-size:17px;
+  line-height:1.5;
+}
+.polaroid p{
+  margin:0;
+  color:var(--muted);
+  font-size:13px;
+}
+.card-date{
+  display:block;
+  margin-top:9px;
+  color:var(--pink);
+  font-size:12px;
+}
+
+/* 直播切片 */
+.clip-cover{
+  position:relative;
+  display:grid;
+  place-items:center;
+  width:100%;
+  height:100%;
+  color:var(--pink-dark);
+  text-decoration:none;
+  background:
+    radial-gradient(circle at 25% 20%,#fff 0 3%,transparent 3.5%),
+    radial-gradient(circle at 80% 75%,#fff 0 4%,transparent 4.5%),
+    linear-gradient(135deg,#ffe6ef,#fff8f2);
+}
+.play-icon{
+  display:grid;
+  place-items:center;
+  width:66px;
+  height:66px;
+  padding-left:5px;
+  border:1px solid #fff;
+  border-radius:50%;
+  color:#fff;
+  background:var(--pink);
+  box-shadow:0 8px 24px rgba(170,82,111,.2);
+  font-size:24px;
+}
+.clip-platform{
+  position:absolute;
+  right:12px;
+  bottom:9px;
+  font-size:12px;
+  letter-spacing:.08em;
+}
+.card-link{
+  display:inline-block;
+  margin-top:11px;
+  color:var(--pink-dark);
+  font-size:13px;
+  font-weight:600;
+  text-decoration:none;
+}
+
+/* 桂花树 */
+.tree-board{
+  position:relative;
+  overflow:hidden;
+  min-height:590px;
+  border:1px solid var(--line);
+  border-radius:24px;
+  background:
+    linear-gradient(to top,#f1e3da 0 8%,transparent 8%),
+    linear-gradient(#fffafd,#fff4e8);
+  box-shadow:var(--shadow);
+}
+.tree-board>svg{
+  position:absolute;
+  bottom:0;
+  left:50%;
+  width:min(100%,800px);
+  height:96%;
+  transform:translateX(-50%);
+}
+.messages{
+  position:absolute;
+  inset:20px 16px 155px;
+}
+.flower-message{
+  position:absolute;
+  display:grid;
+  place-items:center;
+  width:112px;
+  min-height:76px;
+  padding:12px;
+  border:0;
+  border-radius:52% 48% 55% 45%;
+  color:#76532a;
+  background:rgba(255,237,172,.96);
+  box-shadow:0 5px 15px rgba(154,116,53,.13);
+  font-size:11px;
+  line-height:1.45;
+  text-align:center;
+  transform:translate(-50%,-50%) rotate(var(--rotate,0deg));
+}
+.flower-message:nth-child(3n+2){background:rgba(255,248,211,.97)}
+.flower-message:nth-child(3n){background:rgba(255,224,166,.96)}
+.flower-message span{
+  display:-webkit-box;
+  overflow:hidden;
+  -webkit-box-orient:vertical;
+  -webkit-line-clamp:3;
+}
+.tree-actions{
+  display:flex;
+  justify-content:center;
+  margin:18px 0;
+}
+.small-button,.submit-button{
+  padding:9px 18px;
+  border:0;
+  border-radius:999px;
+  color:#fff;
+  background:var(--pink);
+}
+.message-form{
+  display:grid;
+  grid-template-columns:160px 1fr auto;
+  gap:12px;
+  width:min(100%,920px);
+  margin:22px auto 0;
+}
+.message-form input,.message-form textarea{
+  width:100%;
+  min-width:0;
+  padding:11px 15px;
+  border:1px solid var(--line);
+  border-radius:14px;
+  color:var(--text);
+  background:#fff;
+  resize:vertical;
+}
+.message-form textarea{
+  min-height:48px;
+  max-height:140px;
+}
+.message-form .submit-button{border-radius:14px}
+.form-note{
+  margin:12px 0 24px;
+  color:var(--muted);
+  font-size:12px;
+  text-align:center;
+}
+.all-messages{
+  width:min(100%,920px);
+  margin:24px auto 0;
+  padding:16px 20px;
+  border:1px solid var(--line);
+  border-radius:18px;
+  background:rgba(255,255,255,.85);
+}
+.all-messages summary{
+  color:var(--pink-dark);
+  cursor:pointer;
+  font-weight:600;
+}
+.message-list{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:12px;
+  margin-top:18px;
+}
+.message-card{
+  padding:14px;
+  border-radius:14px;
+  background:var(--pink-pale);
+  font-size:13px;
+}
+.message-card strong{
+  display:block;
+  margin-bottom:5px;
+  color:var(--pink-dark);
+  overflow-wrap:anywhere;
+}
+.message-card p{
+  margin:0;
+  white-space:pre-wrap;
+  overflow-wrap:anywhere;
+}
+
+/* 弹窗 */
+dialog{
+  width:min(calc(100% - 32px),590px);
+  max-height:82vh;
+  padding:26px;
+  border:1px solid var(--line);
+  border-radius:22px;
+  color:var(--text);
+  background:#fff;
+  box-shadow:var(--shadow);
+}
+dialog::backdrop{background:rgba(74,48,58,.35)}
+.dialog-close{
+  float:right;
+  padding:7px 15px;
+  border:0;
+  border-radius:999px;
+  color:var(--pink-dark);
+  background:var(--pink-light);
+}
+#dialog-name{color:var(--pink-dark)}
+#dialog-text{
+  white-space:pre-wrap;
+  overflow-wrap:anywhere;
+}
+
+.photo-dialog-note{
+  color:var(--muted);
+  font-size:13px;
+}
+.photo-list{
+  display:grid;
+  gap:10px;
+  margin:18px 0;
+}
+.photo-row{
+  display:grid;
+  grid-template-columns:1fr auto;
+  align-items:center;
+  gap:12px;
+  padding:12px 14px;
+  border-radius:14px;
+  background:var(--pink-pale);
+}
+.photo-row strong{
+  display:block;
+  font-size:14px;
+}
+.photo-row small{
+  display:block;
+  color:var(--muted);
+  overflow-wrap:anywhere;
+}
+.photo-upload{
+  padding:7px 13px;
+  border:0;
+  border-radius:999px;
+  color:#fff;
+  background:var(--pink);
+  white-space:nowrap;
+}
+.reset-photos{
+  padding:8px 15px;
+  border:1px solid var(--line);
+  border-radius:999px;
+  color:var(--pink-dark);
+  background:#fff;
+}
+
+/* 响应式 */
+@media (max-width:850px){
+  .cover-layout{
+    grid-template-columns:1fr 1fr;
+    gap:14px;
+    width:min(100%,480px);
+  }
+  .portrait-wrap{
+    grid-column:1/-1;
+    grid-row:1;
+    width:min(78%,300px);
+    margin:auto;
+  }
+  .cover-menu{grid-row:2;gap:12px}
+  .menu-button{
+    min-height:52px;
+    padding:9px 11px;
+    font-size:14px;
+  }
+
+  .polaroid-grid{
+    grid-template-columns:repeat(2,minmax(0,1fr));
+  }
+
+  .timeline::before{left:12px}
+  .timeline-item{grid-template-columns:30px 1fr}
+  .timeline-date{
+    grid-column:2;
+    padding:0 0 8px 12px;
+    text-align:left;
+  }
+  .timeline-dot{
+    grid-column:1;
+    grid-row:1/3;
+    margin-top:4px;
+  }
+  .timeline-card{
+    grid-column:2;
+    grid-template-columns:1fr;
+    margin-left:12px;
+  }
+  .timeline-visual{
+    padding:18px;
+    border-right:0;
+    border-bottom:1px solid var(--line);
+  }
+
+  .message-form{grid-template-columns:1fr}
+  .flower-message{width:96px;min-height:70px}
+}
+
+@media (max-width:540px){
+  .inner-page{padding-inline:13px}
+  .polaroid-grid,.message-list{grid-template-columns:1fr}
+  .polaroid{
+    width:min(100%,370px);
+    margin-inline:auto;
+  }
+  .badge{padding-inline:23px}
+  .tree-board{min-height:660px}
+  .messages{inset-inline:4px}
+  .flower-message{
+    width:83px;
+    min-height:65px;
+    padding:8px;
+    font-size:10px;
+  }
+  .sticker{width:58px}
+  .photo-settings-button{
+    top:10px;
+    right:10px;
+    padding:7px 11px;
+    font-size:12px;
+  }
+  .page-mark{display:none}
+}
+
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{
+    animation:none!important;
+    transition:none!important;
+    scroll-behavior:auto!important;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<!-- 可复用的原创蝾螈图标 -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="icon-axolotl" viewBox="0 0 120 100">
+    <path d="M32 44 18 30M30 53 12 52M88 44l14-14M90 53l18-1"
+      fill="none" stroke="var(--axo-line,#e78eac)"
+      stroke-width="7" stroke-linecap="round"/>
+    <ellipse cx="60" cy="54" rx="36" ry="29"
+      fill="var(--axo-main,#f7b5c8)"/>
+    <circle cx="47" cy="49" r="3.4" fill="#4f3740"/>
+    <circle cx="73" cy="49" r="3.4" fill="#4f3740"/>
+    <path d="M52 64q8 7 16 0" fill="none"
+      stroke="#4f3740" stroke-width="3" stroke-linecap="round"/>
+    <circle cx="38" cy="59" r="5.5"
+      fill="var(--axo-cheek,#ef91ac)" opacity=".55"/>
+    <circle cx="82" cy="59" r="5.5"
+      fill="var(--axo-cheek,#ef91ac)" opacity=".55"/>
+  </symbol>
+</svg>
+
+<!-- 页面装饰贴纸 -->
+<svg class="sticker sticker-axolotl" viewBox="0 0 120 100" aria-hidden="true">
+  <rect x="4" y="4" width="112" height="92" rx="40" fill="#fff"/>
+  <path d="M32 44 18 30M30 53 12 52M88 44l14-14M90 53l18-1"
+    fill="none" stroke="#e78eac" stroke-width="7" stroke-linecap="round"/>
+  <ellipse cx="60" cy="54" rx="36" ry="29" fill="#f7b5c8"/>
+  <circle cx="47" cy="49" r="3.4" fill="#4f3740"/>
+  <circle cx="73" cy="49" r="3.4" fill="#4f3740"/>
+  <path d="M52 64q8 7 16 0" fill="none"
+    stroke="#4f3740" stroke-width="3" stroke-linecap="round"/>
+  <circle cx="38" cy="59" r="5.5" fill="#ef91ac" opacity=".55"/>
+  <circle cx="82" cy="59" r="5.5" fill="#ef91ac" opacity=".55"/>
+</svg>
+
+<svg class="sticker sticker-rabbit" viewBox="0 0 110 120" aria-hidden="true">
+  <rect x="3" y="3" width="104" height="114" rx="42" fill="#fff"/>
+  <ellipse cx="33" cy="37" rx="12" ry="29" fill="#eee2e8"
+    transform="rotate(-18 33 37)"/>
+  <ellipse cx="77" cy="37" rx="12" ry="29" fill="#eee2e8"
+    transform="rotate(18 77 37)"/>
+  <circle cx="55" cy="70" r="34" fill="#f8f1f4"/>
+  <path d="m39 67 8 1M63 68l8-1" stroke="#593e48"
+    stroke-width="4" stroke-linecap="round"/>
+  <path d="M49 82q6 5 12 0" fill="none"
+    stroke="#c57590" stroke-width="3" stroke-linecap="round"/>
+</svg>
+
+<button id="open-photo-settings" class="photo-settings-button" type="button">
+  照片设置
+</button>
+
+<main>
+
+  <!-- 第一层：封面 -->
+  <section id="cover" class="page cover active" aria-label="封面">
+    <div class="cover-layout">
+      <nav class="cover-menu" aria-label="封面导航第一组">
+        <button class="menu-button" data-go="profile">个人信息</button>
+        <button class="menu-button" data-go="career">电竞经历与荣誉称号</button>
+        <button class="menu-button" data-go="clips">直播切片</button>
+      </nav>
+
+      <div class="portrait-wrap">
+        <div class="portrait-frame">
+          <!-- 封面和个人信息共用 cover -->
+          <img data-photo="cover"
+            alt="染详身穿红白AG队服的定妆照">
+        </div>
+        <h1 class="cover-name">染详</h1>
+        <p class="cover-subtitle">成都AG超玩会 · 打野</p>
+      </div>
+
+      <nav class="cover-menu cover-menu-right" aria-label="封面导航第二组">
+        <button class="menu-button" data-go="moments">日常动态</button>
+        <button class="menu-button" data-go="messages">粉丝留言</button>
+      </nav>
+    </div>
+
+    <div class="cover-footer">桂花雨</div>
+  </section>
+
+  <!-- 个人信息 -->
+  <section id="profile" class="page inner-page" aria-labelledby="profile-title">
+    <header class="topbar">
+      <button class="back-button" data-go="cover">← 返回封面</button>
+      <span class="page-mark">01 / PROFILE</span>
+    </header>
+
+    <div class="section">
+      <div class="section-heading">
+        <h1 id="profile-title">个人信息</h1>
+        <p>一张属于染详的小小工作牌</p>
+      </div>
+
+      <article class="badge">
+        <div class="badge-avatar">
+          <!-- 与封面完全一致，共用同一张图片 -->
+          <img data-photo="cover"
+            alt="染详身穿红白AG队服的定妆照">
+        </div>
+
+        <p class="badge-id">ID：成都AG超玩会.染详</p>
+
+        <dl class="profile-list">
+          <div class="profile-row">
+            <dt>姓名</dt>
+            <dd>染详（本名：管泓宇）</dd>
+          </div>
+          <div class="profile-row">
+            <dt>出生日期</dt>
+            <dd>2007年1月24日</dd>
+          </div>
+          <div class="profile-row">
+            <dt>哪里人</dt>
+            <dd>重庆云阳</dd>
+          </div>
+          <div class="profile-row">
+            <dt>动物塑</dt>
+            <dd>流氓兔、蝾螈</dd>
+          </div>
+          <div class="profile-row">
+            <dt>爱好</dt>
+            <dd>喜欢的水果：西瓜</dd>
+          </div>
+          <div class="profile-row">
+            <dt>游戏位置</dt>
+            <dd>打野</dd>
+          </div>
+        </dl>
+
+        <div class="social-links">
+          <a href="https://weibo.com/u/7932057514"
+            target="_blank" rel="noopener noreferrer">微博主页 ↗</a>
+          <button type="button" id="copy-xhs">
+            复制小红书号：6787599683
+          </button>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- 电竞经历：不放照片，使用蝾螈贴纸 -->
+  <section id="career" class="page inner-page" aria-labelledby="career-title">
+    <header class="topbar">
+      <button class="back-button" data-go="cover">← 返回封面</button>
+      <span class="page-mark">02 / CAREER</span>
+    </header>
+
+    <div class="section">
+      <div class="section-heading">
+        <h1 id="career-title">电竞经历与荣誉称号</h1>
+        <p>沿时间的轨迹，收藏每一次登场与成长</p>
+      </div>
+
+      <div class="timeline">
+
+        <article class="timeline-item">
+          <time class="timeline-date">青训阶段</time>
+          <div class="timeline-dot" aria-hidden="true"></div>
+          <div class="timeline-card">
+            <div class="timeline-visual"
+              style="--axo-main:#f7b5c8;--axo-line:#e78eac;--axo-cheek:#ef91ac;--visual-bg:#ffeef4">
+              <figure>
+                <svg class="axo" role="img" aria-label="粉色蝾螈贴纸">
+                  <use href="#icon-axolotl"></use>
+                </svg>
+                <figcaption>初心 · 登场</figcaption>
+              </figure>
+            </div>
+            <div class="timeline-copy">
+              <h2>青训·破军｜小银龙挑战赛夺冠</h2>
+              <p>染详作为青训·破军打野，随队在小银龙挑战赛夺冠，拿到挑战者杯参赛名额。</p>
+              <span class="honor">小银龙挑战赛冠军</span>
+              <span class="honor">挑战者杯参赛名额</span>
+            </div>
+          </div>
+        </article>
+
+        <article class="timeline-item">
+          <time class="timeline-date">2025.12.29</time>
+          <div class="timeline-dot" aria-hidden="true"></div>
+          <div class="timeline-card">
+            <div class="timeline-visual"
+              style="--axo-main:#e0c4f0;--axo-line:#c79ce3;--axo-cheek:#e6a5cf;--visual-bg:#f7effc">
+              <figure>
+                <svg class="axo" role="img" aria-label="浅紫色蝾螈贴纸">
+                  <use href="#icon-axolotl"></use>
+                </svg>
+                <figcaption>签约 · 启程</figcaption>
+              </figure>
+            </div>
+            <div class="timeline-copy">
+              <h2>成都AG超玩会自留签</h2>
+              <p>成都AG超玩会将自留签给到管泓宇，ID为“成都AG超玩会.染详”，备战KPL春季赛。</p>
+              <p>职业生涯首战使用裴擒虎，拿到首个MVP；常用英雄包括镜、夏侯惇、橘右京。</p>
+              <span class="honor">成都AG超玩会自留签</span>
+              <span class="honor">职业生涯首个MVP</span>
+            </div>
+          </div>
+        </article>
+
+        <article class="timeline-item">
+          <time class="timeline-date">2026春季常规赛</time>
+          <div class="timeline-dot" aria-hidden="true"></div>
+          <div class="timeline-card">
+            <div class="timeline-visual"
+              style="--axo-main:#bfe6d4;--axo-line:#8fcbb4;--axo-cheek:#8fd0b6;--visual-bg:#eefaf4">
+              <figure>
+                <svg class="axo" role="img" aria-label="薄荷绿蝾螈贴纸">
+                  <use href="#icon-axolotl"></use>
+                </svg>
+                <figcaption>新锐 · 成长</figcaption>
+              </figure>
+            </div>
+            <div class="timeline-copy">
+              <h2>最佳新锐候选</h2>
+              <p>入选2026KPL春季常规赛最佳新锐候选。</p>
+              <p class="official-quote">官方评价：“善察者，通晓战局，以谋定数。”</p>
+              <p>分均承伤5188、承伤占比25.08%、分均经济714，均排名S组打野位前列，能在坦野与野核间切换。</p>
+              <span class="honor">2026KPL春季常规赛最佳新锐候选</span>
+            </div>
+          </div>
+        </article>
+
+        <article class="timeline-item">
+          <time class="timeline-date">2026春季赛</time>
+          <div class="timeline-dot" aria-hidden="true"></div>
+          <div class="timeline-card">
+            <div class="timeline-visual"
+              style="--axo-main:#f8e1a8;--axo-line:#e2c274;--axo-cheek:#ecca83;--visual-bg:#fffaec">
+              <figure>
+                <svg class="axo" role="img" aria-label="奶黄色蝾螈贴纸">
+                  <use href="#icon-axolotl"></use>
+                </svg>
+                <figcaption>高光 · 最佳</figcaption>
+              </figure>
+            </div>
+            <div class="timeline-copy">
+              <h2>第七周最佳打野</h2>
+              <p>第七周入选最佳阵容并获评最佳打野：分均经济758、经济占比23.40%、KDA 8.33，均排名S组打野第一。</p>
+              <p>对阵南通Hero时，使用诸葛亮在10分30秒连续叠加被动打出三连决胜，帮助队伍1换5团灭对手，并获该局MVP。</p>
+              <span class="honor">第七周最佳阵容</span>
+              <span class="honor">第七周最佳打野</span>
+              <span class="honor">诸葛亮三连决胜·该局MVP</span>
+            </div>
+          </div>
+        </article>
+
+        <article class="timeline-item">
+          <time class="timeline-date">2026.10.04</time>
+          <div class="timeline-dot" aria-hidden="true"></div>
+          <div class="timeline-card">
+            <div class="timeline-visual"
+              style="--axo-main:#bfdcf6;--axo-line:#8fbfe8;--axo-cheek:#8fc0e8;--visual-bg:#eff7ff">
+              <figure>
+                <svg class="axo" role="img" aria-label="天蓝色蝾螈贴纸">
+                  <use href="#icon-axolotl"></use>
+                </svg>
+                <figcaption>年总 · 突破</figcaption>
+              </figure>
+            </div>
+            <div class="timeline-copy">
+              <h2>年度总决赛擂台赛｜镜MVP</h2>
+              <p>年度总决赛擂台赛，AG以3:0战胜济南RW侠。染详第三局轮换上场，使用镜关键切入并获评MVP。</p>
+              <p>因诸葛亮、韩信等英雄的赛场表现，被称为“请神达人”。</p>
+              <span class="honor">年度总决赛擂台赛该局MVP</span>
+              <span class="honor">“请神达人”</span>
+            </div>
+          </div>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- 直播切片 -->
+  <section id="clips" class="page inner-page" aria-labelledby="clips-title">
+    <header class="topbar">
+      <button class="back-button" data-go="cover">← 返回封面</button>
+      <span class="page-mark">03 / CLIPS</span>
+    </header>
+
+    <div class="section">
+      <div class="section-heading">
+        <h1 id="clips-title">直播切片</h1>
+        <p>把值得反复观看的瞬间，装进拍立得</p>
+      </div>
+
+      <div class="polaroid-grid">
+
+        <figure class="polaroid">
+          <a class="polaroid-media clip-cover"
+            href="https://www.bilibili.com/video/BV1CeAAzqEP6/"
+            target="_blank" rel="noopener noreferrer"
+            aria-label="在哔哩哔哩打开染详直播切片">
+            <span class="play-icon">▶</span>
+            <span class="clip-platform">BILIBILI</span>
+          </a>
+          <figcaption>
+            <h2>染详直播切片</h2>
+            <p>哔哩哔哩视频，点击封面或下方链接观看原视频。</p>
+            <a class="card-link"
+              href="https://www.bilibili.com/video/BV1CeAAzqEP6/"
+              target="_blank" rel="noopener noreferrer">
+              前往哔哩哔哩观看 ↗
+            </a>
+          </figcaption>
+        </figure>
+
+        <figure class="polaroid">
+          <a class="polaroid-media clip-cover"
+            href="https://m.weibo.cn/detail/5313486214404890"
+            target="_blank" rel="noopener noreferrer"
+            aria-label="在微博打开染详直播切片">
+            <span class="play-icon">▶</span>
+            <span class="clip-platform">WEIBO</span>
+          </a>
+          <figcaption>
+            <h2>染详直播切片</h2>
+            <p>微博视频，点击封面或下方链接查看原微博。</p>
+            <a class="card-link"
+              href="https://m.weibo.cn/detail/5313486214404890"
+              target="_blank" rel="noopener noreferrer">
+              前往微博观看 ↗
+            </a>
+          </figcaption>
+        </figure>
+
+        <figure class="polaroid">
+          <a class="polaroid-media clip-cover"
+            href="https://www.xiaohongshu.com/discovery/item/6af65999000000002a02fad0?source=webshare&amp;xhsshare=pc_web&amp;xsec_token=ABYYZQqHnX46RF-cgH6-joJ0ZHiIhhI7RMFHHeeaZwibM=&amp;xsec_source=pc_share"
+            target="_blank" rel="noopener noreferrer"
+            aria-label="在小红书打开小染最近的直播切片">
+            <span class="play-icon">▶</span>
+            <span class="clip-platform">小红书</span>
+          </a>
+          <figcaption>
+            <h2>小染最近的直播切片</h2>
+            <p>作者：一棵小柟树</p>
+            <a class="card-link"
+              href="https://www.xiaohongshu.com/discovery/item/6af65999000000002a02fad0?source=webshare&amp;xhsshare=pc_web&amp;xsec_token=ABYYZQqHnX46RF-cgH6-joJ0ZHiIhhI7RMFHHeeaZwibM=&amp;xsec_source=pc_share"
+              target="_blank" rel="noopener noreferrer">
+              前往小红书观看 ↗
+            </a>
+          </figcaption>
+        </figure>
+
+        <figure class="polaroid">
+          <a class="polaroid-media clip-cover"
+            href="https://www.xiaohongshu.com/discovery/item/6aa837dc000000001103a705?source=webshare&amp;xhsshare=pc_web&amp;xsec_token=ABZollbOdUn8WBSewPvpu-Kb0tCLHf2A3PWaoPn2-KTaQ=&amp;xsec_source=pc_share"
+            target="_blank" rel="noopener noreferrer"
+            aria-label="在小红书打开歌王染详">
+            <span class="play-icon">▶</span>
+            <span class="clip-platform">小红书</span>
+          </a>
+          <figcaption>
+            <h2>歌王染详！！！</h2>
+            <p>作者：西瓜多肉啵</p>
+            <a class="card-link"
+              href="https://www.xiaohongshu.com/discovery/item/6aa837dc000000001103a705?source=webshare&amp;xhsshare=pc_web&amp;xsec_token=ABZollbOdUn8WBSewPvpu-Kb0tCLHf2A3PWaoPn2-KTaQ=&amp;xsec_source=pc_share"
+              target="_blank" rel="noopener noreferrer">
+              前往小红书观看 ↗
+            </a>
+          </figcaption>
+        </figure>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- 日常动态：3 → 4 → 2 → 1 → 5 -->
+  <section id="moments" class="page inner-page" aria-labelledby="moments-title">
+    <header class="topbar">
+      <button class="back-button" data-go="cover">← 返回封面</button>
+      <span class="page-mark">04 / MOMENTS</span>
+    </header>
+
+    <div class="section">
+      <div class="section-heading">
+        <h1 id="moments-title">日常动态</h1>
+        <p>按照片时间顺序 3 → 4 → 2 → 1 → 5 收藏这些瞬间</p>
+      </div>
+
+      <div class="polaroid-grid">
+
+        <figure class="polaroid">
+          <div class="polaroid-media">
+            <img data-photo="p3"
+              alt="图3：染详在挑战者杯现场戴着耳机举手">
+          </div>
+          <figcaption>
+            <h2>赛场瞬间</h2>
+            <p>挑战者杯比赛现场，戴着耳机，举起手回应镜头。</p>
+            <span class="card-date">PHOTO 03 · 顺序 01</span>
+          </figcaption>
+        </figure>
+
+        <figure class="polaroid">
+          <div class="polaroid-media">
+            <img data-photo="p4"
+              alt="图4：染详穿红白运动外套点赞">
+          </div>
+          <figcaption>
+            <h2>点赞时刻</h2>
+            <p>红白运动外套搭配白色T恤，坐在沙发上竖起大拇指。</p>
+            <span class="card-date">PHOTO 04 · 顺序 02</span>
+          </figcaption>
+        </figure>
+
+        <figure class="polaroid">
+          <div class="polaroid-media">
+            <img data-photo="p2"
+              alt="图2：染详穿白色珠饰西装看向镜头">
+          </div>
+          <figcaption>
+            <h2>白色西装 · 侧影</h2>
+            <p>靠在米色墙壁的转角处，眼神看向镜头。</p>
+            <span class="card-date">PHOTO 02 · 顺序 03</span>
+          </figcaption>
+        </figure>
+
+        <figure class="polaroid">
+          <div class="polaroid-media">
+            <img data-photo="p1"
+              alt="图1：染详穿白色珠饰西装平静站立">
+          </div>
+          <figcaption>
+            <h2>白色西装 · 定格</h2>
+            <p>银色圆珠与金属链条点缀白色西装，留下平静的一幕。</p>
+            <span class="card-date">PHOTO 01 · 顺序 04</span>
+          </figcaption>
+        </figure>
+
+        <figure class="polaroid">
+          <div class="polaroid-media">
+            <img data-photo="p5"
+              alt="图5：染详穿粉色T恤的直播日常画面">
+          </div>
+          <figcaption>
+            <h2>直播日常</h2>
+            <p>粉色T恤与轻松神情，收藏直播间里的生活感瞬间。</p>
+            <span class="card-date">PHOTO 05 · 顺序 05</span>
+          </figcaption>
+        </figure>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- 粉丝留言 -->
+  <section id="messages" class="page inner-page" aria-labelledby="messages-title">
+    <header class="topbar">
+      <button class="back-button" data-go="cover">← 返回封面</button>
+      <span class="page-mark">05 / OSMANTHUS</span>
+    </header>
+
+    <div class="section">
+      <div class="section-heading">
+        <h1 id="messages-title">粉丝留言</h1>
+        <p>愿每一句真心话，都落成一树桂花</p>
+      </div>
+
+      <div class="tree-board">
+        <svg viewBox="0 0 800 560" aria-hidden="true">
+          <path d="M392 560c5-111-7-183 9-267M400 405 280 292M397 369 520 248M390 334 316 206M407 331 455 177"
+            fill="none" stroke="#a88570" stroke-width="29"
+            stroke-linecap="round"/>
+          <g fill="#dce8c9">
+            <circle cx="400" cy="160" r="127"/>
+            <circle cx="273" cy="222" r="112"/>
+            <circle cx="530" cy="218" r="118"/>
+            <circle cx="172" cy="282" r="87"/>
+            <circle cx="626" cy="298" r="91"/>
+            <circle cx="355" cy="285" r="125"/>
+            <circle cx="488" cy="302" r="110"/>
+          </g>
+          <g fill="#edc768">
+            <circle cx="167" cy="236" r="6"/>
+            <circle cx="233" cy="316" r="5"/>
+            <circle cx="301" cy="153" r="6"/>
+            <circle cx="437" cy="99" r="5"/>
+            <circle cx="566" cy="167" r="6"/>
+            <circle cx="625" cy="295" r="5"/>
+            <circle cx="480" cy="355" r="6"/>
+            <circle cx="337" cy="343" r="5"/>
+          </g>
+        </svg>
+
+        <div id="message-flowers" class="messages" aria-live="polite"></div>
+      </div>
+
+      <div class="tree-actions">
+        <button class="small-button" id="next-flowers" type="button">
+          换一树桂花
+        </button>
+      </div>
+
+      <form id="message-form" class="message-form">
+        <input id="nickname" maxlength="20"
+          placeholder="昵称（可留空）"
+          autocomplete="nickname" aria-label="留言昵称">
+        <textarea id="message" maxlength="200" required
+          placeholder="写下不超过200字的祝福……"
+          aria-label="留言内容"></textarea>
+        <button class="submit-button" type="submit">留下桂花</button>
+      </form>
+
+      <p class="form-note">
+        点击桂花可查看完整留言。网页新增留言只保存在当前浏览器，不会上传或同步到小红书。
+      </p>
+
+      <details class="all-messages">
+        <summary>
+          查看全部 <span id="message-count">57</span> 条留言
+        </summary>
+        <div id="all-message-list" class="message-list"></div>
+      </details>
+    </div>
+  </section>
+
+</main>
+
+<!-- 留言详情弹窗 -->
+<dialog id="message-dialog" aria-labelledby="dialog-name">
+  <button class="dialog-close" id="dialog-close" type="button">关闭</button>
+  <h2 id="dialog-name"></h2>
+  <p id="dialog-text"></p>
+</dialog>
+
+<!-- 照片设置弹窗 -->
+<dialog id="photo-dialog" aria-labelledby="photo-dialog-title">
+  <button class="dialog-close" id="photo-dialog-close" type="button">关闭</button>
+  <h2 id="photo-dialog-title">照片设置</h2>
+  <p class="photo-dialog-note">
+    点击“选择图片”即可立即显示，无需修改代码。封面与个人信息共用第一张照片。
+    导入照片会压缩并尽量保存在当前浏览器；若准备部署到公开网站，请改用下方默认的
+    assets 文件路径。
+  </p>
+  <div id="photo-list" class="photo-list"></div>
+  <button id="reset-photos" class="reset-photos" type="button">
+    清除手动导入的照片
+  </button>
+</dialog>
+
+<input id="photo-file-input" type="file"
+  accept="image/jpeg,image/png,image/webp,image/gif" hidden>
+
+<script>
+"use strict";
+
+/* =========================================================
+   一、页面路由
+========================================================= */
+
+const routes = [
+  "cover",
+  "profile",
+  "career",
+  "clips",
+  "moments",
+  "messages"
+];
+
+const pageTitles = {
+  cover:"染详 · 桂花雨",
+  profile:"个人信息 · 染详",
+  career:"电竞经历与荣誉称号 · 染详",
+  clips:"直播切片 · 染详",
+  moments:"日常动态 · 染详",
+  messages:"粉丝留言 · 染详"
+};
+
+function showRoute(){
+  let route = location.hash.slice(1) || "cover";
+
+  if(!routes.includes(route)){
+    route = "cover";
+  }
+
+  document.querySelectorAll(".page").forEach(page=>{
+    page.classList.toggle("active",page.id === route);
+  });
+
+  document.title = pageTitles[route];
+  window.scrollTo(0,0);
+}
+
+document.querySelectorAll("[data-go]").forEach(button=>{
+  button.addEventListener("click",()=>{
+    location.hash = button.dataset.go;
+  });
+});
+
+window.addEventListener("hashchange",showRoute);
+showRoute();
+
+/* =========================================================
+   二、照片加载与手动导入
+   封面和个人信息都使用 data-photo="cover"，因此始终一致。
+========================================================= */
+
+const PHOTO_CONFIG = {
+  cover:{
+    label:"封面及个人信息照片",
+    src:"assets/cover.jpg"
+  },
+  p1:{
+    label:"日常动态 · 原图片1",
+    src:"assets/photo-1.jpg"
+  },
+  p2:{
+    label:"日常动态 · 原图片2",
+    src:"assets/photo-2.jpg"
+  },
+  p3:{
+    label:"日常动态 · 原图片3",
+    src:"assets/photo-3.jpg"
+  },
+  p4:{
+    label:"日常动态 · 原图片4",
+    src:"assets/photo-4.jpg"
+  },
+  p5:{
+    label:"日常动态 · 原图片5",
+    src:"assets/photo-5.jpg"
+  }
+};
+
+const PHOTO_STORAGE_KEY = "ranxiang-photo-overrides-v2";
+const photoDialog = document.getElementById("photo-dialog");
+const photoFileInput = document.getElementById("photo-file-input");
+const photoList = document.getElementById("photo-list");
+
+let currentPhotoKey = "";
+let photoOverrides = loadPhotoOverrides();
+
+function loadPhotoOverrides(){
+  try{
+    const value = JSON.parse(
+      localStorage.getItem(PHOTO_STORAGE_KEY) || "{}"
+    );
+    return value && typeof value === "object" ? value : {};
+  }catch{
+    return {};
+  }
+}
+
+function createPhotoPlaceholder(label){
+  const svg = `
+    <svg xmlns="http://www.w3.org/2000/svg" width="900" height="1000"
+      viewBox="0 0 900 1000">
+      <defs>
+        <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stop-color="#fde6ee"/>
+          <stop offset="1" stop-color="#fff6e9"/>
+        </linearGradient>
+      </defs>
+      <rect width="900" height="1000" fill="url(#bg)"/>
+      <circle cx="450" cy="360" r="105" fill="#fff" opacity=".9"/>
+      <path d="M270 720c45-205 315-205 360 0"
+        fill="#fff" opacity=".9"/>
+      <text x="450" y="820" text-anchor="middle"
+        font-size="30" fill="#aa526f"
+        font-family="Microsoft YaHei,sans-serif">${label}</text>
+      <text x="450" y="875" text-anchor="middle"
+        font-size="23" fill="#967b86"
+        font-family="Microsoft YaHei,sans-serif">请点击右上角“照片设置”导入图片</text>
+    </svg>`;
+
+  return "data:image/svg+xml;charset=UTF-8," + encodeURIComponent(svg);
+}
+
+function setPhotoSource(img,key,source){
+  /*
+   * 先绑定事件，再设置 src，避免图片加载失败发生在事件绑定之前。
+   * 加载失败时显示内置占位图，不再出现破图图标。
+   */
+  img.onload = ()=>{
+    img.classList.remove("photo-missing");
+  };
+
+  img.onerror = ()=>{
+    img.onload = null;
+    img.onerror = null;
+    img.classList.add("photo-missing");
+    img.src = createPhotoPlaceholder(PHOTO_CONFIG[key].label);
+  };
+
+  img.src = source;
+}
+
+function renderPhotos(){
+  document.querySelectorAll("img[data-photo]").forEach(img=>{
+    const key = img.dataset.photo;
+    const config = PHOTO_CONFIG[key];
+
+    if(!config) return;
+
+    const source = photoOverrides[key] || config.src;
+    setPhotoSource(img,key,source);
+  });
+}
+
+function renderPhotoSettings(){
+  photoList.replaceChildren();
+
+  Object.entries(PHOTO_CONFIG).forEach(([key,config])=>{
+    const row = document.createElement("div");
+    row.className = "photo-row";
+
+    const information = document.createElement("div");
+
+    const title = document.createElement("strong");
+    title.textContent = config.label;
+
+    const status = document.createElement("small");
+    status.textContent = photoOverrides[key]
+      ? "状态：已手动导入，刷新后仍会尝试保留"
+      : "默认路径：" + config.src;
+
+    information.append(title,status);
+
+    const uploadButton = document.createElement("button");
+    uploadButton.type = "button";
+    uploadButton.className = "photo-upload";
+    uploadButton.textContent = "选择图片";
+
+    uploadButton.addEventListener("click",()=>{
+      currentPhotoKey = key;
+      photoFileInput.value = "";
+      photoFileInput.click();
+    });
+
+    row.append(information,uploadButton);
+    photoList.appendChild(row);
+  });
+}
+
+/*
+ * 将图片压缩为 JPEG，降低 localStorage 存储压力。
+ * 动图导入后会变成静态画面，因此建议使用 JPG、PNG 或普通 WebP。
+ */
+async function compressPhoto(file){
+  const objectURL = URL.createObjectURL(file);
+
+  try{
+    const image = new Image();
+
+    await new Promise((resolve,reject)=>{
+      image.onload = resolve;
+      image.onerror = ()=>reject(new Error("浏览器无法解码该图片"));
+      image.src = objectURL;
+    });
+
+    const maxSide = 1400;
+    const originalWidth = image.naturalWidth;
+    const originalHeight = image.naturalHeight;
+
+    if(!originalWidth || !originalHeight){
+      throw new Error("图片尺寸无效");
+    }
+
+    const scale = Math.min(
+      1,
+      maxSide / Math.max(originalWidth,originalHeight)
+    );
+
+    const canvas = document.createElement("canvas");
+    canvas.width = Math.max(1,Math.round(originalWidth * scale));
+    canvas.height = Math.max(1,Math.round(originalHeight * scale));
+
+    const context = canvas.getContext("2d");
+
+    if(!context){
+      throw new Error("浏览器无法处理图片");
+    }
+
+    context.fillStyle = "#ffffff";
+    context.fillRect(0,0,canvas.width,canvas.height);
+    context.drawImage(image,0,0,canvas.width,canvas.height);
+
+    return canvas.toDataURL("image/jpeg",0.86);
+  }finally{
+    URL.revokeObjectURL(objectURL);
+  }
+}
+
+photoFileInput.addEventListener("change",async()=>{
+  const file = photoFileInput.files && photoFileInput.files[0];
+
+  if(!file || !currentPhotoKey) return;
+
+  if(!file.type.startsWith("image/")){
+    alert("请选择 JPG、PNG 或 WebP 图片。");
+    return;
+  }
+
+  if(file.size > 25 * 1024 * 1024){
+    alert("图片超过25MB，请先压缩后再导入。");
+    return;
+  }
+
+  const key = currentPhotoKey;
+
+  try{
+    const dataURL = await compressPhoto(file);
+
+    // 先更新页面，即使浏览器存储失败，本次打开也能看到照片。
+    photoOverrides[key] = dataURL;
+    renderPhotos();
+    renderPhotoSettings();
+
+    try{
+      localStorage.setItem(
+        PHOTO_STORAGE_KEY,
+        JSON.stringify(photoOverrides)
+      );
+    }catch{
+      alert(
+        "照片已显示，但浏览器存储空间不足，刷新后可能无法保留。" +
+        "建议改用 assets 文件夹保存正式照片。"
+      );
+    }
+  }catch(error){
+    alert(
+      "照片读取失败。若是 HEIC 等格式，请先转换成 JPG 或 PNG。\n" +
+      error.message
+    );
+  }finally{
+    currentPhotoKey = "";
+    photoFileInput.value = "";
+  }
+});
+
+document.getElementById("open-photo-settings").addEventListener("click",()=>{
+  renderPhotoSettings();
+  photoDialog.showModal();
+});
+
+document.getElementById("photo-dialog-close").addEventListener("click",()=>{
+  photoDialog.close();
+});
+
+photoDialog.addEventListener("click",event=>{
+  if(event.target === photoDialog){
+    photoDialog.close();
+  }
+});
+
+document.getElementById("reset-photos").addEventListener("click",()=>{
+  if(!confirm("确定清除所有手动导入的照片吗？")) return;
+
+  photoOverrides = {};
+
+  try{
+    localStorage.removeItem(PHOTO_STORAGE_KEY);
+  }catch{
+    // 无法操作本地存储时，仍清除当前页面中的导入结果。
+  }
+
+  renderPhotos();
+  renderPhotoSettings();
+});
+
+renderPhotos();
+
+/* =========================================================
+   三、复制小红书号
+========================================================= */
+
+document.getElementById("copy-xhs").addEventListener("click",async event=>{
+  const button = event.currentTarget;
+  let copied = false;
+
+  try{
+    await navigator.clipboard.writeText("6787599683");
+    copied = true;
+  }catch{
+    const temporaryInput = document.createElement("textarea");
+    temporaryInput.value = "6787599683";
+    temporaryInput.style.position = "fixed";
+    temporaryInput.style.opacity = "0";
+    document.body.appendChild(temporaryInput);
+    temporaryInput.select();
+
+    try{
+      copied = document.execCommand("copy");
+    }catch{
+      copied = false;
+    }
+
+    temporaryInput.remove();
+  }
+
+  button.textContent = copied
+    ? "已复制：6787599683"
+    : "小红书号：6787599683";
+
+  setTimeout(()=>{
+    button.textContent = "复制小红书号：6787599683";
+  },2200);
+});
+
+/* =========================================================
+   四、粉丝留言
+========================================================= */
+
+const sourceMessages = [
+  {n:"咩咩咩咩呀",t:"小染登场一周年快乐！新的一年再自信一点吧！天天开心少少内耗！你一定会淋到属于你的金色雨！！"},
+  {n:"一拳打爆混凝土✨",t:"每次都喜欢喊你小红毛，看着你的头发从红红的变成现在黑黑的，时间也从春天不知不觉到了冬天，马上又快到你和我们初遇的时间了，一周年快乐，我们可爱的小队长。感谢管鸿宇同学克服了种种困难成为了染详选手，电竞路上大家都有属于自己的风景，或通天路或常青树，染详选手的路是属于自己独特的路，看到的风景跟别人不同，我们染详选手有着长长的职业生涯，你现在所受的委屈只是你的职业路上一粒小小的沙子，过去了的终究会过去，希望一切安好，坚定信念，勇敢向前！"},
+  {n:"杪（miǎo）秋",t:"染详选手！你真的是很优秀的打野选手！我相信你一定能迎来自己的时代的！期待能在更多的赛场上看到染详选手！！！"},
+  {n:"糖果味的月亮.",t:"染详，登场一周年快乐，希望你天天开心，少些烦心事，能够越打越好，我们赛场见！！！一定能淋到属于你的金色雨！！"},
+  {n:"翻滚地西瓜OvO",t:"时间仍然在飞跃，你也将登场一周所有美好的祝愿也只想化成一句像你的身体健康，希望你赛场上面越来越好打出属于自己的那一片天"},
+  {n:"愤怒的猫",t:"小染我们超超超超爱你！"},
+  {n:"钨啦啦啦",t:"登场一周年快乐！愿你在往后的赛场打出更多属于自己的高光，拿到更多的MVP。前路坦荡，万事顺意。我相信你一定可以淋到属于你的金色雨！"},
+  {n:"心也随你流浪",t:"往日暗沉不可追 来日之路光明灿烂 祝染详选手登场KPL一周年快乐！"},
+  {n:"恋萌癖",t:"从破军到现在，我依然坚信你是特别棒的打野。一周年快乐希望以后的管鸿宇顺顺利利，我们一定会淋金色雨。"},
+  {n:"茄丁小捞面_（等导儿小红花版）",t:"很庆幸能够认识你 染详选手 一周年快乐！愿你总能遇见属于自己的光 继续自信上场 好好享受每一场对局 大胆去打 未来漫漫前路 你会越来越耀眼的！"},
+  {n:"林秋（赠尔一束林秋）",t:"倏忽一载峡谷征程。红发是属于少年的炽热勋章，像火神赫菲斯托斯淬炼而出的锋芒。枪起马超、龙啸赵云、幻镜流转、诸葛执野，广阔的英雄池，是你留给我们无数的惊喜。赛场总有起伏，胜败皆是历练。赫尔墨斯的风不会停下，桂花雨的陪伴永不落幕。愿峡谷永远善待追风的少年，有高光惊喜，也有平安顺遂，往后每一段征程，我们都与你同在。"},
+  {n:"水香",t:"不管是作为染详还是管泓宇都希望你能坚定、幸福。"},
+  {n:"染香逢桂雨",t:"小染登场一周年 快乐！希望你幸运一点在幸运一点相信自己一定可以的，天天开心不要内耗你是最棒的！你一定会淋到属于你的金色雨！！"},
+  {n:"古德辣可",t:"保持热爱，希望你永远有面对挫折的勇气，期待赛场上能看见你更多亮眼的表现。染详选手，一周年快乐，希望你天天开心"},
+  {n:"梦到哪句说哪句bot",t:"染详登场一周年快乐呀！祝咱天天开心希望你新的一年可以再幸运一些！长路漫漫你一定淋到属于你的金雨！"},
+  {n:"一棵小柟树",t:"小染登场一周年快乐呀(>﹏<)祝你天天开心，越来越好，心想事成，淋到属于自己的金色雨(^○^)桂花雨一直在你身边(>^ω^<)"},
+  {n:"潮汐",t:"小染登场一周年快乐呀，希望你天天开心，永远是直播间那个快快乐乐的自己！"},
+  {n:"念言",t:"从25年的初识到26年的陪伴 管泓宇你要相信自已呀 职业路上的第二年 我们还会陪你走下去的 也愿金色雨能够落在染详手心"},
+  {n:"凡鼠我算惹TuT",t:"祝愿未来的染详选手不仅被桂花雨的爱包围，也要被金色雨包围"},
+  {n:"nnnn",t:"染详加油！永远赛场见！"},
+  {n:"再来亿小点点点",t:"染祥一周年快乐！你真的很棒很优秀，希望你少一点内耗。经常听见你用开玩笑的语气说一些否定自己的话，要天天都开开心心的。你很强很强，一定会等到属于你的金色雨，加油，一直顺利走下去吧"},
+  {n:"Diaboliques",t:"祝染详登场一周年快乐！希望未来的染详，不论走到哪里都多一点笑容，多一点自信。祝你永远自由，永远不被外界裹挟。"},
+  {n:"许诺意只能苗🌾",t:"不管是染祥还是管泓宇 桂花雨都在你身后 记得之前意气风发的你也会期待之后越来越好的你 桂花雨会等到陪你淋金色雨的那天"},
+  {n:"染遇",t:"祝染详一周年登场快乐！第一次见你是在选秀大会，之前就一直听说AG有个厉害的打野。时间来到春季赛，虽然一开始成绩不佳但是看着你越打越好很开心。一把诸葛亮一把韩信让我真心觉得你很厉害。后来时间来到夏季赛，听说你会上场打比赛我很开心。之后在直播间听其他桂花雨说你生病了还是很担心的。在赛场上你是叱咤风云的打野位选手在直播间你是逸趣横生的主播。希望你天天开心，在赛场上大放光彩，早日拿到自己的第一个冠军！最后再次祝你一周年登场快乐！"},
+  {n:"落闻星",t:"染详选手，祝你登场一周年快乐。初登场时惊才艳艳的你拥有无数潜能，期待你也祝福你在新的一年里继续为我们带来惊喜、更加出色和精彩的发挥。永远不要忘记自己的初心、不要忘记自己前进的方向。你可是s组打野，是那个一点一点捡回自己、拯救自己的人。很喜欢一句歌词「あきらめなけりゃ、はいつもゼロじゃない」意思是“只要还没有放弃，可能性就永远不是零”。桂花雨永远相信你，你也要相信你自己。"},
+  {n:"嫦霖Lin-",t:"亲爱的小染，登场一周年快乐！约定好了哦我们一定要线下见一次面，我们一起淋金色雨！我会一直爱你！"},
+  {n:"一只椰子",t:"染详，我永远相信你，也请你坚定不移地相信你自己，期待你的冠军🏆"},
+  {n:"18123",t:"小染烦恼都不见 小染愿望都实现"},
+  {n:"樱辰633",t:"小染再幸运一点吧，不要内耗了，相信我们永远相信你，一周年快乐！day day happy to 小染详！"},
+  {n:"轻叹情缘浅",t:"染详要天天开心呀！请再幸运一点 再自信一点！！你真的很棒"},
+  {n:"月亮碎片",t:"染祥选手祝你赛场上如有神助，所向披靡，赛场下积极自信，开心每日"},
+  {n:"记忆斑驳里你是我的春天",t:"染详选手登场一周年快乐！从破军初登场到现在我一直相信你是特别棒的打野，希望未来我们可以在赛场上多多见面。来日之路光明璀璨，期待你在赛场的表现，也祝愿你未来可以站在金色雨下捧起属于自己的奖杯。"},
+  {n:"K.E.BH",t:"管泓宇顺顺利利 以后更幸运一点"},
+  {n:"咩咩不吃羊",t:"保持热爱，照顾好自己，继续往前走，拿到更多想要的结果。无论如何，我们都会一直支持你，陪你奔赴更远的赛场。"},
+  {n:"许知離",t:"25年认识的小染详，我们小染也会一直幸运下去，也会淋到属于自己的金色雨 ，明年的小染详也会一直闪闪发光会越来越棒，现在的你也是超级棒的，加油小染详，未来可期，小染详一直自信，不要内耗，祝你打得越来越好，登场一周年快乐"},
+  {n:"北夕雨Lcberg",t:"染详你真的特别特别棒！从25挑杯开始能看到你在赛场的成长真的非常幸运 希望你能多多相信自己 我们以后也要多多在赛场上见面！你会有很光明的未来 也会得到你想要的东西的！"},
+  {n:"田甜圈",t:"染详选手会淋到属于自己的金色雨！"},
+  {n:"我心恹恹",t:"诚心祝福你，捱得到新天地。"},
+  {n:"一碗添饭^",t:"一周年快乐！染祥选手一定会越来越强越来越幸运！"},
+  {n:"喜欢小沈",t:"有一天我做了一个梦，梦里看到你抱着属于你的奖杯笑的肆意张扬，我相信那不是梦是不远的将来。你是青训营第一打野，你是成都AG超玩会的自留签选手，你是创造历史的破军小队长…感谢你选择成为染详，染详选手永远是桂花雨的第一选择！"},
+  {n:"我永远相信你、",t:"感谢你的每一次登场，愿染详少一点压力，多一点属于自己的胜利.峡谷这条路慢慢走，希望染祥一直保有当初上场的那份喜欢 谢谢你一直站在赛场，愿染详之后都能打得舒心，少些遗憾！"},
+  {n:"谢长生",t:"小染，这条路坚持走下去，我们都相信你一定会有一个光辉灿烂的未来"},
+  {n:"小花是花骨头呀",t:"希望染详选手能再幸运一点，相信明年的你会更耀眼"},
+  {n:"序章雪.",t:"小染祥希望你再幸运一点 期待下次再在赛场上看见闪闪发光的你"},
+  {n:"XEC1018",t:"小红毛请再幸运一点，再自信一点吧！"},
+  {n:"随我浪迹一生.",t:"染详选手请坚定地走下去呀，相信你一定会得到你想得到的一切，我们永远相信你！春天见！赛场见！"},
+  {n:"煎锅",t:"染详选手，能站在这个赛场上的你真的非常厉害，你会越打越好越来越幸运的，你一定能有闪光的未来"},
+  {n:"椹荏来着",t:"小染天天开心，会有属于自己的璀璨未来的"},
+  {n:"蛋挞喵喵球",t:"小染啊 愿你永远留有进步的心和明媚的笑容呀 保持少年锐气一直向前走吧"},
+  {n:"ヾWhale゜",t:"从25年挑杯开始看比赛，也从跟Syg打的那场比赛开始关注到你。不管是那时拿就稳赢的镜还是丝血反杀的老虎每每都让人感叹这么惊艳。希望小染详能一直保持自信，以后能在赛场一直看到你越打越好，天天开心，登场一周年快乐！"},
+  {n:"xiaa",t:"祝愿染详天天开心，希望以后能在赛场一直看到你，祝你越打越好，登场一周年快乐！"},
+  {n:"顾筱肆很有幸_yx",t:"小染详期待多多在赛场上见到你呀，期待你的绝活打野英雄们！"},
+  {n:"狸狸宝贝",t:"你一直都通透清醒 要坚定的相信自己 然后我们要赛场常相见"},
+  {n:"真的只是来喝茶吗",t:"泓澄万里，宇阔天高，来日方长。祝染详选手登场一周年快乐！"},
+  {n:"如果不限流的话彩票中奖也没关系",t:"小染详天天开心！加油我们永远相信你"},
+  {n:"pbonis",t:"染详希望你再幸运一点 你很厉害 相信自己！"},
+  {n:"莫斯卡托有点甜🍸",t:"染详选手天天开心 期待你的首发，你的MVP和你的FMVP"}
+];
+
+const MESSAGE_STORAGE_KEY = "ranxiang-guihuayu-local-messages-v1";
+const flowerContainer = document.getElementById("message-flowers");
+const allMessageList = document.getElementById("all-message-list");
+const messageCount = document.getElementById("message-count");
+const messageDialog = document.getElementById("message-dialog");
+const dialogName = document.getElementById("dialog-name");
+const dialogText = document.getElementById("dialog-text");
+
+let flowerOffset = 0;
+const flowersPerPage = 18;
+
+const flowerPositions = [
+  [12,52],[20,33],[30,19],[42,14],[55,15],[69,23],
+  [81,36],[88,55],[22,62],[34,47],[47,38],[60,43],
+  [73,57],[34,72],[48,66],[61,72],[48,88],[77,78]
+];
+
+function getLocalMessages(){
+  try{
+    const value = JSON.parse(
+      localStorage.getItem(MESSAGE_STORAGE_KEY) || "[]"
+    );
+    return Array.isArray(value) ? value.slice(-50) : [];
+  }catch{
+    return [];
+  }
+}
+
+function getAllMessages(){
+  return [...sourceMessages,...getLocalMessages()];
+}
+
+function openMessage(item){
+  dialogName.textContent = item.n || "匿名桂花雨";
+  dialogText.textContent = item.t;
+  messageDialog.showModal();
+}
+
+function renderMessages(){
+  const allMessages = getAllMessages();
+
+  flowerContainer.replaceChildren();
+  allMessageList.replaceChildren();
+  messageCount.textContent = String(allMessages.length);
+
+  if(flowerOffset >= allMessages.length){
+    flowerOffset = 0;
+  }
+
+  const visibleCount = Math.min(flowersPerPage,allMessages.length);
+
+  for(let index = 0;index < visibleCount;index++){
+    const item = allMessages[
+      (flowerOffset + index) % allMessages.length
+    ];
+
+    const [x,y] = flowerPositions[index];
+
+    const flower = document.createElement("button");
+    flower.type = "button";
+    flower.className = "flower-message";
+    flower.style.left = x + "%";
+    flower.style.top = y + "%";
+    flower.style.setProperty(
+      "--rotate",
+      ((index % 5) - 2) * 3 + "deg"
+    );
+    flower.setAttribute(
+      "aria-label",
+      "查看" + item.n + "的完整留言"
+    );
+
+    const summary = document.createElement("span");
+    summary.textContent = item.t;
+
+    flower.appendChild(summary);
+    flower.addEventListener("click",()=>openMessage(item));
+    flowerContainer.appendChild(flower);
+  }
+
+  allMessages.forEach(item=>{
+    const card = document.createElement("article");
+    card.className = "message-card";
+
+    const name = document.createElement("strong");
+    name.textContent = item.n || "匿名桂花雨";
+
+    const text = document.createElement("p");
+    text.textContent = item.t;
+
+    card.append(name,text);
+    allMessageList.appendChild(card);
+  });
+}
+
+document.getElementById("next-flowers").addEventListener("click",()=>{
+  flowerOffset += flowersPerPage;
+  renderMessages();
+});
+
+document.getElementById("dialog-close").addEventListener("click",()=>{
+  messageDialog.close();
+});
+
+messageDialog.addEventListener("click",event=>{
+  if(event.target === messageDialog){
+    messageDialog.close();
+  }
+});
+
+document.getElementById("message-form").addEventListener("submit",event=>{
+  event.preventDefault();
+
+  const nameInput = document.getElementById("nickname");
+  const textInput = document.getElementById("message");
+
+  const name = nameInput.value.trim() || "匿名桂花雨";
+  const text = textInput.value.trim();
+
+  if(!text){
+    textInput.focus();
+    return;
+  }
+
+  const localMessages = getLocalMessages();
+  localMessages.push({n:name,t:text});
+
+  try{
+    localStorage.setItem(
+      MESSAGE_STORAGE_KEY,
+      JSON.stringify(localMessages.slice(-50))
+    );
+  }catch{
+    alert("当前浏览器无法保存留言，请检查隐私模式或存储权限。");
+    return;
+  }
+
+  event.target.reset();
+  flowerOffset = Math.max(
+    0,
+    getAllMessages().length - flowersPerPage
+  );
+  renderMessages();
+});
+
+renderMessages();
+</script>
+</body>
+</html>
